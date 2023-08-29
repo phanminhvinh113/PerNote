@@ -25,10 +25,11 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
     if (typeof window === "undefined") {
       return initialValue;
     }
+
     //
     try {
       const item = window.localStorage.getItem(key);
-      return item ? parseJSON(item) : (initialValue as T);
+      return item ? (parseJSON(item) as T) : (initialValue as T);
     } catch (error) {
       console.warn(`Error reading localStorage key “${key}”:`, error);
       return initialValue as T;

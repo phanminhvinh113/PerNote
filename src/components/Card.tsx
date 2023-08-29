@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent } from "react";
 import { Task, Type } from "../types/Column";
 import { useSortable } from "@dnd-kit/sortable";
 // import { CSS } from "@dnd-kit/utilities";
@@ -8,9 +8,6 @@ interface ICardProps {
 }
 //
 const Card: FunctionComponent<ICardProps> = ({ card }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [editMode, setEditMode] = useState<boolean>(false);
-
   const {
     setNodeRef,
     attributes,
