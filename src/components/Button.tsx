@@ -6,7 +6,7 @@ interface IButtonProps {
   children: ReactNode;
 }
 const style =
-  " ml-2 h-[60px] w-[350px] min-w-[350px] cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor p-4 ring-rose-500 hover:ring-2 flex gap-2";
+  " ml-2 h-[60px] w-[350px] min-w-[350px] cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor p-2 ring-rose-500 hover:ring-2 flex gap-2";
 const Button: FunctionComponent<IButtonProps> = ({
   handleCreateNew,
   children,

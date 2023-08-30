@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from "react";
+import { FC, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   DndContext,
@@ -13,109 +13,97 @@ import {
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 
 import { Column, Task, Type } from "../types/Column";
-import ColumnContainer from "./DragList";
+import DragList from "./DragList";
 import Button from "./Button";
 import Card from "./Card";
+import { DragContext } from "../context/DragContext";
+
 //
 interface IDragBoardProps {}
 //
-// interface IState {
-//   columns: Column[];
-//   tasks: Task[];
-//   activeColumn: Column | null;
-//   activeTask: Task | null;
-// }
+//
 //
 const defaultCols: Column[] = [
-  { id: "todo", title: "Todo" },
-  { id: "doing", title: "Doing" },
-  { id: "done", title: "Done" },
+  { id: "Column1", title: "Todo" },
+  { id: "Column2", title: "Doing" },
+  { id: "Column3", title: "Done" },
   // Add more items as needed
 ];
 const defaultTasks: Task[] = [
   {
-    id: "1",
-    columnId: "todo",
+    id: 1,
+    columnId: "Column1",
     content: "List admin APIs for dashboard",
   },
   {
-    id: "2",
-    columnId: "todo",
+    id: 2,
+    columnId: "Column1",
     content:
       "Develop user registration functionality with OTP delivered on SMS after email confirmation and phone number confirmation",
   },
   {
-    id: "3",
-    columnId: "doing",
+    id: 3,
+    columnId: "Column2",
     content: "Conduct security testing",
   },
   {
-    id: "4",
-    columnId: "doing",
+    id: 4,
+    columnId: "Column2",
     content: "Analyze competitors",
   },
   {
-    id: "5",
-    columnId: "done",
+    id: 5,
+    columnId: "Column3",
     content: "Create UI kit documentation",
   },
   {
-    id: "6",
-    columnId: "done",
+    id: 6,
+    columnId: "Column3",
     content: "Dev meeting",
   },
   {
-    id: "7",
-    columnId: "done",
+    id: 7,
+    columnId: "Column3",
     content: "Deliver dashboard prototype",
   },
   {
-    id: "8",
-    columnId: "todo",
+    id: 8,
+    columnId: "Column1",
     content: "Optimize application performance",
   },
   {
-    id: "9",
-    columnId: "todo",
+    id: 9,
+    columnId: "Column1",
     content: "Implement data validation",
   },
   {
-    id: "10",
-    columnId: "todo",
+    id: 10,
+    columnId: "Column1",
     content: "Design database schema",
   },
   {
-    id: "11",
-    columnId: "todo",
+    id: 11,
+    columnId: "Column1",
     content: "Integrate SSL web certificates into workflow",
   },
   {
-    id: "12",
-    columnId: "doing",
+    id: 12,
+    columnId: "Column2",
     content: "Implement error logging and monitoring",
   },
   {
-    id: "13",
-    columnId: "doing",
+    id: 13,
+    columnId: "Column2",
     content: "Design and implement responsive UI",
   },
 ];
 //Styled Component
 const containerStyle =
-  "m-auto flex min-h-screen w-full overflow-x-auto overflow-y-auto px-[40px]";
-
-const containerColumnStyle =
-  "m-auto flex min-h-screen w-full items-center overflow-x-auto overflow-y-hidden px-[40px]";
+  "m-auto flex min-h-screen w-full overflow-x-scroll overflow-y-hidden px-[40px]";
 
 //
+
 const DragBoard: FC<IDragBoardProps> = () => {
-  //Initial State
-  // const [state, setState] = useState<IState>({
-  //   columns: defaultCols,
-  //   tasks: defaultTasks,
-  //   activeColumn: null,
-  //   activeTask: null,
-  // });
   //
   const [columns, setColumns] = useState<Column[]>(defaultCols);
   //
@@ -126,62 +114,95 @@ const DragBoard: FC<IDragBoardProps> = () => {
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
 
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
+  //
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const inputRef = useRef<HTMLInputElement>(null);
   //
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 5,
+        distance: 10,
       },
     })
   );
+
+  const initialValueContext = {
+    tasks,
+    setTasks,
+    columns,
+    setColumns,
+    isEditMode,
+    setIsEditMode,
+  };
+  //
+
   return (
-    <div className={containerStyle}>
+    <DragContext.Provider value={initialValueContext}>
       <DndContext
         sensors={sensors}
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
         onDragOver={onDragOver}
       >
-        <div className={containerColumnStyle}>
+        <div ref={containerRef} className={containerStyle}>
           <div className="m-auto flex gap-4">
             <div className="flex gap-4">
               <SortableContext items={columnsId}>
                 {columns.map((column) => (
-                  <ColumnContainer
+                  <DragList
+                    ref={inputRef}
                     key={column.id}
                     column={column}
-                    tasks={tasks.filter((item) => item.columnId === column.id)}
+                    taskList={tasks.filter(
+                      (item) => item.columnId === column.id
+                    )}
                   />
                 ))}
               </SortableContext>
             </div>
+            <Button handleCreateNew={createNewColumn}>Add Column</Button>
           </div>
-          <Button handleCreateNew={createNewColumn}>Add Column</Button>
+          {createPortal(
+            <DragOverlay>
+              {activeColumn && (
+                <DragList
+                  column={activeColumn}
+                  taskList={tasks.filter(
+                    (task) => task.columnId === activeColumn.id
+                  )}
+                />
+              )}
+              {activeTask && <Card card={activeTask} />}
+            </DragOverlay>,
+            document.body
+          )}
         </div>
-        {createPortal(
-          <DragOverlay>
-            {activeColumn && (
-              <ColumnContainer
-                column={activeColumn}
-                tasks={tasks.filter(
-                  (task) => task.columnId === activeColumn.id
-                )}
-              />
-            )}
-            {activeTask && <Card card={activeTask} />}
-          </DragOverlay>,
-          document.body
-        )}
       </DndContext>
-    </div>
+    </DragContext.Provider>
   );
+  //
+  function scrollToRightEnd() {
+    if (containerRef.current) {
+      const scrollWidth = containerRef.current.scrollWidth;
+      const containerWidth = containerRef.current.clientWidth;
+      const scrollLeftMax = scrollWidth - containerWidth;
+      containerRef.current.scrollTo({
+        left: scrollLeftMax,
+        behavior: "smooth",
+      });
+    }
+  }
   //
   function createNewColumn() {
     const columnToAdd: Column = {
-      id: generateId(),
-      title: `Title ${columns.length + 1}`,
+      id: Type.COLUMN + `${columns.length + 1}`,
+      title: "",
     };
     setColumns([...columns, columnToAdd]);
+    scrollToRightEnd();
   }
   //
   function onDragStart(event: DragStartEvent) {
@@ -211,9 +232,8 @@ const DragBoard: FC<IDragBoardProps> = () => {
     if (activeId === overId) return;
 
     const isActiveAColumn = active.data.current?.type === Type.COLUMN;
-    const isActiveCard = active.data.current?.type === Type.CARD;
 
-    if (!isActiveAColumn || !isActiveCard) return;
+    if (!isActiveAColumn) return;
 
     setColumns((columns) => {
       const activeColumnIndex = columns.findIndex((col) => col.id === activeId);
@@ -271,10 +291,5 @@ const DragBoard: FC<IDragBoardProps> = () => {
     }
   }
 };
-function generateId() {
-  /* Generate a random number between 0 and 10000 */
-  return Math.floor(Math.random() * 10001);
-}
-//
 
 export default DragBoard;

@@ -1,6 +1,7 @@
-.list-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 20px;
+.focus-visible-bb:focus-visible {
+  border-bottom: 1px solid gray;
+}
+[contentEditable="true"]:empty:not(:focus):before {
+  content: attr(data-text);
+  color: gray;
 }
