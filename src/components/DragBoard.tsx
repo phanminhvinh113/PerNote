@@ -137,7 +137,6 @@ const DragBoard: FC<IDragBoardProps> = () => {
     isEditMode,
     setIsEditMode,
   };
-  //
 
   return (
     <DragContext.Provider value={initialValueContext}>
@@ -184,13 +183,12 @@ const DragBoard: FC<IDragBoardProps> = () => {
     </DragContext.Provider>
   );
   //
+
+  //
   function scrollToRightEnd() {
     if (containerRef.current) {
-      const scrollWidth = containerRef.current.scrollWidth;
-      const containerWidth = containerRef.current.clientWidth;
-      const scrollLeftMax = scrollWidth - containerWidth;
       containerRef.current.scrollTo({
-        left: scrollLeftMax,
+        left: containerRef.current.scrollWidth,
         behavior: "smooth",
       });
     }
