@@ -99,10 +99,18 @@ export const DragContext = createContext<typeContext>({
   setTasks: () => {},
   columns: [],
   setColumns: () => {},
-  updateTitleColumn: (cardId, value) => {},
-  deleteColumn(columnId) {},
-  updateCard(cardId, value) {},
-  deleteCard(cardId) {},
+  updateTitleColumn: (cardId, value) => {
+    console.log(cardId, value);
+  },
+  deleteColumn(columnId) {
+    console.log(columnId);
+  },
+  updateCard(cardId, value) {
+    console.log(cardId, value);
+  },
+  deleteCard(cardId) {
+    console.log(cardId);
+  },
 });
 //
 interface DragContextProps {}
