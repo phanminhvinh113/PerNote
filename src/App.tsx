@@ -1,8 +1,9 @@
 import "./App.css";
-import DragBoard from "./components/DragBoard";
+
+import DragContextContainer from "./context/DragContext";
 
 function App() {
-  return <DragBoard />;
+  return <DragContextContainer />;
 }
 
 export default App;

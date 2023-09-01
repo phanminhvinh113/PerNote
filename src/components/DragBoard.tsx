@@ -1,4 +1,4 @@
-import { FC, useMemo, useRef, useState } from "react";
+import { FC, useContext, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   DndContext,
@@ -16,87 +16,10 @@ import { Column, Task, Type } from "../types/Column";
 import DragList from "./DragList";
 import Button from "./Button";
 import Card from "./Card";
-import { DragContext } from "../context/DragContext";
-
+import { typeContext, DragContext } from "../context/DragContext";
 //
 interface IDragBoardProps {}
-//
-//
-//
-const defaultCols: Column[] = [
-  { id: "Column1", title: "Todo" },
-  { id: "Column2", title: "Doing" },
-  { id: "Column3", title: "Done" },
-  // Add more items as needed
-];
-const defaultTasks: Task[] = [
-  {
-    id: 1,
-    columnId: "Column1",
-    content: "List admin APIs for dashboard",
-  },
-  {
-    id: 2,
-    columnId: "Column1",
-    content:
-      "Develop user registration functionality with OTP delivered on SMS after email confirmation and phone number confirmation",
-  },
-  {
-    id: 3,
-    columnId: "Column2",
-    content: "Conduct security testing",
-  },
-  {
-    id: 4,
-    columnId: "Column2",
-    content: "Analyze competitors",
-  },
-  {
-    id: 5,
-    columnId: "Column3",
-    content: "Create UI kit documentation",
-  },
-  {
-    id: 6,
-    columnId: "Column3",
-    content: "Dev meeting",
-  },
-  {
-    id: 7,
-    columnId: "Column3",
-    content: "Deliver dashboard prototype",
-  },
-  {
-    id: 8,
-    columnId: "Column1",
-    content: "Optimize application performance",
-  },
-  {
-    id: 9,
-    columnId: "Column1",
-    content: "Implement data validation",
-  },
-  {
-    id: 10,
-    columnId: "Column1",
-    content: "Design database schema",
-  },
-  {
-    id: 11,
-    columnId: "Column1",
-    content: "Integrate SSL web certificates into workflow",
-  },
-  {
-    id: 12,
-    columnId: "Column2",
-    content: "Implement error logging and monitoring",
-  },
-  {
-    id: 13,
-    columnId: "Column2",
-    content: "Design and implement responsive UI",
-  },
-];
+
 //Styled Component
 const containerStyle =
   "m-auto flex min-h-screen w-full overflow-x-scroll overflow-y-hidden px-[40px]";
@@ -104,18 +27,15 @@ const containerStyle =
 //
 
 const DragBoard: FC<IDragBoardProps> = () => {
-  //
-  const [columns, setColumns] = useState<Column[]>(defaultCols);
-  //
-  const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
+  const { setColumns, columns, setTasks, tasks } =
+    useContext<typeContext>(DragContext);
 
-  const [tasks, setTasks] = useState<Task[]>(defaultTasks);
+  const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
 
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
 
   const [activeTask, setActiveTask] = useState<Task | null>(null);
 
-  const [isEditMode, setIsEditMode] = useState<boolean>(false);
   //
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -129,62 +49,35 @@ const DragBoard: FC<IDragBoardProps> = () => {
     })
   );
 
-  const initialValueContext = {
-    tasks,
-    setTasks,
-    columns,
-    setColumns,
-    isEditMode,
-    setIsEditMode,
-  };
-
   return (
-    <DragContext.Provider value={initialValueContext}>
+    <div ref={containerRef} className={containerStyle}>
       <DndContext
         sensors={sensors}
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
         onDragOver={onDragOver}
       >
-        <div ref={containerRef} className={containerStyle}>
-          <div className="m-auto flex gap-4">
-            <div className="flex gap-4">
-              <SortableContext items={columnsId}>
-                {columns.map((column) => (
-                  <DragList
-                    ref={inputRef}
-                    key={column.id}
-                    column={column}
-                    taskList={tasks.filter(
-                      (item) => item.columnId === column.id
-                    )}
-                  />
-                ))}
-              </SortableContext>
-            </div>
-            <Button handleCreateNew={createNewColumn}>Add Column</Button>
+        <div className="m-auto flex gap-4">
+          <div className="flex gap-4">
+            <SortableContext items={columnsId}>
+              {columns.map((column) => (
+                <DragList ref={inputRef} key={column.id} column={column} />
+              ))}
+            </SortableContext>
           </div>
-          {createPortal(
-            <DragOverlay>
-              {activeColumn && (
-                <DragList
-                  column={activeColumn}
-                  taskList={tasks.filter(
-                    (task) => task.columnId === activeColumn.id
-                  )}
-                />
-              )}
-              {activeTask && <Card card={activeTask} />}
-            </DragOverlay>,
-            document.body
-          )}
+          <Button handleCreateNew={createNewColumn}>Add Column</Button>
         </div>
+        {createPortal(
+          <DragOverlay>
+            {activeColumn && <DragList column={activeColumn} />}
+            {activeTask && <Card card={activeTask} />}
+          </DragOverlay>,
+          document.body
+        )}
       </DndContext>
-    </DragContext.Provider>
+    </div>
   );
-  //
 
-  //
   function scrollToRightEnd() {
     if (containerRef.current) {
       containerRef.current.scrollTo({

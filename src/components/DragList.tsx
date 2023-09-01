@@ -5,10 +5,9 @@ import {
   useMemo,
   HTMLAttributes,
   useRef,
-  useEffect,
   memo,
 } from "react";
-import { Column, Task, Type } from "../types/Column";
+import { Column, Type } from "../types/Column";
 import Card from "./Card";
 import {
   SortableContext,
@@ -25,14 +24,20 @@ import PlusIcon from "../assets/Icons/PlusICon";
 
 interface IColumnProps extends HTMLAttributes<HTMLDivElement> {
   column: Column;
-  taskList: Task[];
 }
 
 //-----------------------------------------------------------------------//
 
 const DragList = forwardRef<HTMLInputElement, IColumnProps>((props, ref) => {
   //
-  const { column, taskList } = props;
+  const { column } = props;
+  const { setTasks, tasks, deleteColumn, updateTitleColumn } =
+    useContext<typeContext>(DragContext);
+  //
+  const taskList = useMemo(
+    () => tasks.filter((task) => task.columnId === column.id),
+    [tasks, column.id]
+  );
   //
   const taskIds = useMemo(() => {
     return taskList.map((task) => task.id);
@@ -40,11 +45,8 @@ const DragList = forwardRef<HTMLInputElement, IColumnProps>((props, ref) => {
 
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const containerListCardRef = useRef<HTMLDivElement>(null);
-  const cardInputRef = useRef<HTMLDivElement>(null);
-  //
-  const { setColumns, columns, setTasks, tasks } =
-    useContext<typeContext>(DragContext);
 
+  //
   const {
     attributes,
     listeners,
@@ -65,12 +67,7 @@ const DragList = forwardRef<HTMLInputElement, IColumnProps>((props, ref) => {
     transform: CSS.Transform.toString(transform),
     transition,
   };
-  //
-  useEffect(() => {
-    console.log(taskList);
-    console.log(cardInputRef.current);
-    cardInputRef.current?.focus();
-  }, [tasks]);
+
   //
   if (isDragging) {
     return (
@@ -101,13 +98,13 @@ const DragList = forwardRef<HTMLInputElement, IColumnProps>((props, ref) => {
                   setIsEditMode(false);
                 }
               }}
-              onChange={(e) => updateTitleColumn(e.target.value)}
+              onChange={(e) => updateTitleColumn(column.id, e.target.value)}
             />
           ) : (
             column?.title
           )}
         </div>
-        <button className={buttonStyle} onClick={deleteColumn}>
+        <button className={buttonStyle} onClick={() => deleteColumn(column.id)}>
           <TrashIcon />
         </button>
       </div>
@@ -115,7 +112,7 @@ const DragList = forwardRef<HTMLInputElement, IColumnProps>((props, ref) => {
       <div ref={containerListCardRef} className={sortTableListStyle}>
         <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
           {taskList?.map((task) => (
-            <Card ref={cardInputRef} card={task} key={task.id} />
+            <Card card={task} key={task.id} />
           ))}
         </SortableContext>
       </div>
@@ -127,7 +124,7 @@ const DragList = forwardRef<HTMLInputElement, IColumnProps>((props, ref) => {
         }}
       >
         <PlusIcon />
-        Add task
+        Add card
       </button>
     </div>
   );
@@ -141,25 +138,6 @@ const DragList = forwardRef<HTMLInputElement, IColumnProps>((props, ref) => {
   //
   function onDoubleClick() {
     setIsEditMode(true);
-  }
-  //
-  function updateTitleColumn(value: string) {
-    if (!column?.id) return;
-    // Add Column Into List//
-    setColumns(
-      columns.map((col) =>
-        col.id !== column.id ? col : { ...col, title: value }
-      )
-    );
-  }
-  //
-  function deleteColumn() {
-    //
-    const confirm = window.confirm("Do you want to delete!");
-
-    if (!confirm || !column?.id) return;
-    // Delete Column Via Column Id
-    setColumns(columns.filter((prev) => prev.id !== column.id));
   }
 });
 // STYLE
@@ -186,5 +164,5 @@ const buttonAddCardStyle =
 const inputStyle =
   "focus:outline-none focus-visible-bb focus:ring-0 w-[100%] p-[8px] rounded-lg  bg-transparent ";
 //
-// eslint-disable-next-line react-refresh/only-export-components
+
 export default memo(DragList);

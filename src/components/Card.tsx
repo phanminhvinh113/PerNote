@@ -1,19 +1,21 @@
-import { forwardRef, useContext, useEffect, useState } from "react";
+import { FC, memo, useContext, useEffect, useRef, useState } from "react";
 import { Task, Type } from "../types/Column";
 import { useSortable } from "@dnd-kit/sortable";
 import { DragContext, typeContext } from "../context/DragContext";
-// import { CSS } from "@dnd-kit/utilities";
+import PencilIcon from "../assets/Icons/PencilIcon";
+
 //
 interface ICardProps {
   card: Task;
 }
-//
-const Card = forwardRef<HTMLDivElement, ICardProps>(({ card }, ref) => {
-  //
-  const [isNewCard, setIsNewCard] = useState<boolean>(false);
-  const [isEditMode, setIsEditMode] = useState<boolean>(false);
-  const { setTasks } = useContext<typeContext>(DragContext);
 
+// eslint-disable-next-line react-refresh/only-export-components
+const Card: FC<ICardProps> = ({ card }) => {
+  //
+
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
+  const { updateCard } = useContext<typeContext>(DragContext);
+  const contentEditableRef = useRef<HTMLDivElement>(null);
   //
   const {
     setNodeRef,
@@ -41,13 +43,13 @@ const Card = forwardRef<HTMLDivElement, ICardProps>(({ card }, ref) => {
   };
   const toggleEditMode = () => {
     setIsEditMode((prev) => !prev);
-    setIsNewCard(false);
+    if (!isEditMode) focus();
   };
   useEffect(() => {
-    if (isNewCard) {
-      setIsEditMode(true);
+    if (isEditMode || !card?.content) {
+      contentEditableRef?.current?.focus();
     }
-  }, [isNewCard]);
+  }, [isEditMode, card]);
   return (
     <div
       ref={setNodeRef}
@@ -59,13 +61,14 @@ const Card = forwardRef<HTMLDivElement, ICardProps>(({ card }, ref) => {
       {...listeners}
     >
       <div
-        ref={ref}
+        ref={contentEditableRef}
         data-text="Typing Task..."
         className={isDragging ? "invisible" : inputStyle}
         contentEditable={isEditMode || !card?.content}
         dangerouslySetInnerHTML={{ __html: card.content }}
         onBlur={(e) => {
           updateCard(card.id, e.currentTarget.innerText);
+          setIsEditMode(false);
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter" && e.shiftKey) {
@@ -77,28 +80,22 @@ const Card = forwardRef<HTMLDivElement, ICardProps>(({ card }, ref) => {
           setIsEditMode(true);
         }}
       />
+      {!isEditMode && (
+        <button className={buttonStyle} onClick={toggleEditMode}>
+          <PencilIcon />
+        </button>
+      )}
     </div>
   );
-
-  function updateCard(cardId: number | string, value: string) {
-    if (!cardId || !value) {
-      return toggleEditMode();
-    }
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === cardId ? { ...task, content: value.trim() } : task
-      )
-    );
-    toggleEditMode();
-  }
-});
+};
 //
 const styledCardContainerDragging =
   "opacity-30 cursor-pointer p-[18px] items-center flex text-left rounded-xl border-[1px] border-slate-400  cursor-grab relative";
 const styledCardContainer =
   " bg-gray-800 p-[18px] items-center flex text-left rounded-xl cursor-grab relative";
 const inputStyle =
-  "w-full break-words whitespace-pre-wrap border-none rounded bg-transparent text-white focus:outline-none ";
-
+  "w-full break-words whitespace-pre-wrap border-none rounded bg-transparent text-white cursor-text focus:outline-none ";
+const buttonStyle = "stroke-gray-500 hover:stroke-white  rounded px-1 py-2";
 //
-export default Card;
+// eslint-disable-next-line react-refresh/only-export-components
+export default memo(Card);

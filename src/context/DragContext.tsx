@@ -1,12 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Dispatch,
   FunctionComponent,
-  ReactNode,
   SetStateAction,
   createContext,
   useState,
 } from "react";
 import { Column, Task } from "../types/Column";
+import DragBoard from "../components/DragBoard";
 //
 const defaultCols: Column[] = [
   { id: "todo", title: "Todo" },
@@ -88,35 +89,76 @@ export type typeContext = {
   setTasks: Dispatch<SetStateAction<Task[]>>;
   columns: Column[];
   setColumns: Dispatch<SetStateAction<Column[]>>;
+  updateTitleColumn: (columnId: number | string, value: string) => void;
+  deleteColumn: (columnId: string | number) => void;
+  updateCard: (cardId: number | string, value: string) => void;
+  deleteCard: (cardId: number | string) => void;
 };
 export const DragContext = createContext<typeContext>({
   tasks: [],
   setTasks: () => {},
   columns: [],
   setColumns: () => {},
+  updateTitleColumn: (cardId, value) => {},
+  deleteColumn(columnId) {},
+  updateCard(cardId, value) {},
+  deleteCard(cardId) {},
 });
 //
-interface DragContextProps {
-  children: ReactNode;
-}
+interface DragContextProps {}
 
-const DragContextContainer: FunctionComponent<DragContextProps> = ({
-  children,
-}) => {
+const DragContextContainer: FunctionComponent<DragContextProps> = () => {
   const [columns, setColumns] = useState<Column[]>(defaultCols);
   const [tasks, setTasks] = useState<Task[]>(defaultTasks);
-
   //
   const initialValueContext: typeContext = {
     tasks,
     setTasks,
     columns,
     setColumns,
+    updateTitleColumn,
+    deleteColumn,
+    updateCard,
+    deleteCard,
   };
   //
+  // Method For Column
+  function updateTitleColumn(columnId: number | string, value: string) {
+    if (!columnId || !value) return;
+    // Add Column Into List
+    setColumns(
+      columns.map((col) =>
+        col.id !== columnId ? col : { ...col, title: value }
+      )
+    );
+  }
+  //
+  function deleteColumn(columnId: string | number) {
+    //
+    const confirm = window.confirm("Do you want to delete!");
+    if (!confirm || !columnId) return;
+    // Delete Column Via Column Id
+    setColumns(columns.filter((prev) => prev.id !== columnId));
+  }
+  //Method for Card
+  function updateCard(cardId: number | string, value: string) {
+    if (!cardId || !value) {
+      return;
+    }
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === cardId ? { ...task, content: value.trim() } : task
+      )
+    );
+  }
+  function deleteCard(cardId: number | string) {
+    if (!cardId) return;
+    setTasks((prev) => prev.filter((card) => card.id !== cardId));
+  }
+
   return (
     <DragContext.Provider value={initialValueContext}>
-      {children}
+      <DragBoard />
     </DragContext.Provider>
   );
 };
