@@ -48,14 +48,13 @@ const DragBoard: FC<IDragBoardProps> = () => {
   );
   // Scrolling To Left End Document When Add New Column Into List
   useEffect(() => {
-    console.log(inputRef.current);
     if (inputRef.current && !inputRef.current?.value) {
       scrollToRightEnd();
       setTimeout(() => {
         inputRef.current?.focus();
       }, 300);
     }
-  }, [columns]);
+  }, [columns.length]);
   //
   return (
     <div ref={containerRef} className={containerStyle}>

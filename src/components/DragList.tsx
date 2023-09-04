@@ -78,8 +78,7 @@ const DragList = forwardRef<HTMLInputElement, IColumnProps>((props, ref) => {
       ></div>
     );
   }
-  //
-  console.log(isEditMode, column.title);
+
   //
   return (
     <div className={containerStyle} ref={setNodeRef} style={style}>
