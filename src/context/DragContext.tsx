@@ -132,10 +132,10 @@ const DragContextContainer: FunctionComponent<DragContextProps> = () => {
   //
   // Method For Column
   function updateTitleColumn(columnId: number | string, value: string) {
-    if (!columnId || !value) return;
+    if (!columnId) return;
     // Add Column Into List
-    setColumns(
-      columns.map((col) =>
+    setColumns((preColumn) =>
+      preColumn.map((col) =>
         col.id !== columnId ? col : { ...col, title: value }
       )
     );

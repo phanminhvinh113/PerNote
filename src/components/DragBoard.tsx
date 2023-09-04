@@ -1,4 +1,4 @@
-import { FC, useContext, useMemo, useRef, useState } from "react";
+import { FC, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   DndContext,
@@ -24,8 +24,6 @@ interface IDragBoardProps {}
 const containerStyle =
   "m-auto flex min-h-screen w-full overflow-x-scroll overflow-y-hidden px-[40px]";
 
-//
-
 const DragBoard: FC<IDragBoardProps> = () => {
   const { setColumns, columns, setTasks, tasks } =
     useContext<typeContext>(DragContext);
@@ -36,9 +34,9 @@ const DragBoard: FC<IDragBoardProps> = () => {
 
   const [activeTask, setActiveTask] = useState<Task | null>(null);
 
-  //
+  //Ref For Scroll Horizontal Column
   const containerRef = useRef<HTMLDivElement>(null);
-
+  // Ref for Input Title Column
   const inputRef = useRef<HTMLInputElement>(null);
   //
   const sensors = useSensors(
@@ -48,7 +46,17 @@ const DragBoard: FC<IDragBoardProps> = () => {
       },
     })
   );
-
+  // Scrolling To Left End Document When Add New Column Into List
+  useEffect(() => {
+    console.log(inputRef.current);
+    if (inputRef.current && !inputRef.current?.value) {
+      scrollToRightEnd();
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 300);
+    }
+  }, [columns]);
+  //
   return (
     <div ref={containerRef} className={containerStyle}>
       <DndContext
@@ -93,7 +101,6 @@ const DragBoard: FC<IDragBoardProps> = () => {
       title: "",
     };
     setColumns([...columns, columnToAdd]);
-    scrollToRightEnd();
   }
   //
   function onDragStart(event: DragStartEvent) {

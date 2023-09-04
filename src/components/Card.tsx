@@ -81,7 +81,10 @@ const Card: FC<ICardProps> = ({ card }) => {
         }}
       />
       {!isEditMode && (
-        <button className={buttonStyle} onClick={toggleEditMode}>
+        <button
+          className={isDragging ? "invisible" : buttonStyle}
+          onClick={toggleEditMode}
+        >
           <PencilIcon />
         </button>
       )}

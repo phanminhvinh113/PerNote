@@ -79,14 +79,16 @@ const DragList = forwardRef<HTMLInputElement, IColumnProps>((props, ref) => {
     );
   }
   //
+  console.log(isEditMode, column.title);
+  //
   return (
     <div className={containerStyle} ref={setNodeRef} style={style}>
       <div className={headerStyle} {...attributes} {...listeners}>
         <div className={titleStyle} onDoubleClick={onDoubleClick}>
-          {isEditMode || !column?.title ? (
+          {isEditMode || !column.title ? (
             <input
               ref={ref}
-              value={column.title}
+              value={column?.title}
               placeholder="Typing Title Here...!"
               className={inputStyle}
               onBlur={() => {
@@ -98,7 +100,12 @@ const DragList = forwardRef<HTMLInputElement, IColumnProps>((props, ref) => {
                   setIsEditMode(false);
                 }
               }}
-              onChange={(e) => updateTitleColumn(column.id, e.target.value)}
+              onChange={(e) => {
+                if (!isEditMode) {
+                  setIsEditMode(true);
+                }
+                updateTitleColumn(column.id, e.target.value);
+              }}
             />
           ) : (
             column?.title
