@@ -2,7 +2,7 @@ import useBoardContext from "@/hooks/useBoardContext";
 import { ICard, IColumn, Type } from "@/types/Data.type";
 import { arrayMove, insertItemAt } from "@/utils/repo";
 import { DragEndEvent, DragOverEvent, DragStartEvent, UniqueIdentifier } from "@dnd-kit/core";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 //interface EvenDragProps {}
 
