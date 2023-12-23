@@ -11,23 +11,15 @@ interface ISortTableItem {
   dataDrag: object;
 }
 //
-
-const SortableItem: FC<ISortTableItem> = ({
-  id,
-  children,
-  className,
-  type,
-  dataDrag,
-}) => {
+const SortableItem: FC<ISortTableItem> = ({ id, children, className, type, dataDrag }) => {
   //
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({
-      id,
-      data: {
-        type,
-        dataDrag,
-      },
-    });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id,
+    data: {
+      type,
+      dataDrag,
+    },
+  });
   const transformAnimation = CSS.Transform.toString(transform);
   const style = {
     transform: transformAnimation,
@@ -35,13 +27,7 @@ const SortableItem: FC<ISortTableItem> = ({
   };
 
   return (
-    <div
-      className={className}
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-    >
+    <div className={className} ref={setNodeRef} style={style} {...attributes} {...listeners}>
       {children}
     </div>
   );

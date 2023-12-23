@@ -1,10 +1,4 @@
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 import { useEventListener } from "./useEventListener";
 //
 
@@ -16,7 +10,9 @@ declare global {
 //
 type SetValue<T> = Dispatch<SetStateAction<T>>;
 //
-function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
+function useLocalStorage<T>(key: string | undefined, initialValue: T): [T, SetValue<T>] {
+  if (!key) throw new Error("Error!");
+
   //Get from local-storage
   // parse stored json or return initialValue
 
@@ -25,8 +21,6 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
     if (typeof window === "undefined") {
       return initialValue;
     }
-
-    //
     try {
       const item = window.localStorage.getItem(key);
       return item ? (parseJSON(item) as T) : (initialValue as T);
@@ -45,9 +39,7 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
   const setValue: SetValue<T> = (value) => {
     //
     if (typeof window === "undefined") {
-      console.warn(
-        `Tried setting localStorage key “${key}” even though environment is not a client`
-      );
+      console.warn(`Tried setting localStorage key “${key}” even though environment is not a client`);
     }
     try {
       // Allow value to be a function so we have the same API as useState

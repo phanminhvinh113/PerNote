@@ -1,13 +1,13 @@
 export type Id = string | number;
 
-export type Column = {
+export type IColumn = {
   id: Id;
   title: string;
 };
 
-export type Task = {
+export type ICard = {
   id: Id;
-  columnId: Id;
+  columnId: string | number;
   content: string;
   imageUrl?: string;
 };

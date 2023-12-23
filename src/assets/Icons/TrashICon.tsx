@@ -1,12 +1,9 @@
+import { memo } from "react";
+
+// eslint-disable-next-line react-refresh/only-export-components
 function TrashIcon() {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      className="w-6 h-6"
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} className="w-6 h-6">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -16,4 +13,5 @@ function TrashIcon() {
   );
 }
 
-export default TrashIcon;
+// eslint-disable-next-line react-refresh/only-export-components
+export default memo(TrashIcon);
