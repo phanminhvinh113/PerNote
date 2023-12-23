@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Dispatch, FunctionComponent, SetStateAction, createContext } from "react";
-import { ICard, IColumn } from "../types/Data.type";
+import * as uuid from "uuid";
+import { IColumn, IListCard } from "../types/Data.type";
 import { useParams } from "react-router-dom";
 import Board from "@/containers/Board/Board.index";
 import { UniqueIdentifier } from "@dnd-kit/core";
-import * as uuid from "uuid";
 import useLocalStorage from "@/hooks/useLocalStorage";
-
 import { useAppDispatch } from "@/store/hooks";
 import { setCardIdSelect } from "@/store/features/card/cardSlice";
 
@@ -30,9 +29,7 @@ export type typeContext = {
 };
 export const BoardContext = createContext<typeContext | undefined>(undefined);
 //
-type IListCard = {
-  [key: UniqueIdentifier]: ICard[];
-};
+
 interface IState {
   listColumn: IColumn[];
   listCard: IListCard;

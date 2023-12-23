@@ -7,24 +7,21 @@ import CreditCardOffIcon from "@mui/icons-material/CreditCardOff";
 
 /**********************************************************8 */
 import Cover from "./Cover";
-import { IColumn, TypeElementMenu } from "@/types/Data.type";
+import { IListCard, TypeElementMenu } from "@/types/Data.type";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { getItemInLocalStorage } from "@/utils/helper";
+import { NAME_STORE_LOCAL } from "@/utils/constant.app";
 
-const deleteCard = async (boardId: string, columnId: UniqueIdentifier, cardId: UniqueIdentifier) => {
+const deleteCard = async (boardId: UniqueIdentifier, columnId: UniqueIdentifier, cardId: UniqueIdentifier) => {
   console.log({ boardId, columnId, cardId });
 
-  const columns: IColumn[] = await getItemInLocalStorage(boardId);
+  const listCard: IListCard = await getItemInLocalStorage(boardId + NAME_STORE_LOCAL.PREFIX_BOARD_CARDS);
 
-  console.log({ columns });
+  const cards = listCard[columnId];
 
-  if (!columns) return;
+  if (!cards) return;
 
-  return columns.map((column) => {
-    if (column._id !== columnId) return column;
-    column.cards = column.cards.filter((card) => card._id !== cardId);
-    return column;
-  });
+  return cards.filter((card) => card._id !== cardId);
 };
 
 export const MenuEdit: TypeElementMenu[] = [

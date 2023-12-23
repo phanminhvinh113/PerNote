@@ -11,6 +11,9 @@ export interface IDataBoard {
   board: IBoard;
 }
 
+export type IListCard = {
+  [key: UniqueIdentifier]: ICard[];
+};
 export interface IBoard {
   _id: UniqueIdentifier;
   title: string;
@@ -61,7 +64,9 @@ export type TypeElementMenu = {
   title: string;
   icon: React.ReactNode;
   component?: React.ReactNode;
-  method?: (boardId: string | undefined, columnId: UniqueIdentifier, cardId: UniqueIdentifier) => void;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  method?: (...args: any[]) => any;
 };
 export type ICoverTemplate = {
   title: string;
