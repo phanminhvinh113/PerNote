@@ -10,10 +10,8 @@ const KEY_NAME: string = "card";
 export interface ICardSliceType {
   isEditCard: boolean;
   isNewCard: boolean;
-
   card_id: UniqueIdentifier | null;
   card_select: ICard;
-
   rect_card: IRect;
 }
 //
@@ -27,6 +25,7 @@ const initCard = {
   memberIds: [],
   comments: [],
   attachments: [],
+  createdDate: null,
 };
 // Define the initial state using that type
 const initialState: ICardSliceType = {

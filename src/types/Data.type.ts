@@ -42,7 +42,7 @@ export type ICard = {
   memberIds: string[];
   comments: string[];
   attachments: string[];
-  createdDate: IDate;
+  createdDate: IDate | null;
 };
 
 export enum Type {
