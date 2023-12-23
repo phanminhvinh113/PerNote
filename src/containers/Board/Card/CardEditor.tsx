@@ -1,4 +1,4 @@
-import React, { RefObject, forwardRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { IRect } from "@/types/Data.type";
 import { initRect } from "@/utils/constant.app";
@@ -8,26 +8,27 @@ import { useAppDispatch } from "@/store/hooks";
 import { setRectCard } from "@/store/features/card/cardSlice";
 
 interface MenuCardProps {
-  refCard: RefObject<HTMLElement | null>;
-  refMenu: RefObject<HTMLElement | null>;
+  refCard: React.RefObject<HTMLDivElement | null>;
+  refMenu: React.RefObject<HTMLDivElement>;
 }
 
 interface IContainerProp {
   rect: IRect;
 }
 
-const CardEditor = forwardRef<HTMLDivElement, MenuCardProps>(({ refCard }, ref) => {
+const CardEditor: React.FC<MenuCardProps> = ({ refCard, refMenu }) => {
   const dispatch = useAppDispatch();
-  const [rect, setRect] = useState<IRect>();
+  const [rect, setRect] = useState<IRect>(initRect);
 
   const calculateDistance = () => {
-    if (refCard?.current && ref) {
+    if (refCard.current && refMenu.current) {
       const rectCard = refCard.current.getBoundingClientRect();
-      const rectMenu = ref?.current?.getBoundingClientRect();
-
+      const rectMenu = refMenu.current.getBoundingClientRect();
+      console.log(rectMenu);
       const rectContainer = {
         ...initRect,
       };
+
       const viewHeight = window.innerHeight;
       const viewWidth = window.innerWidth;
 
@@ -45,6 +46,7 @@ const CardEditor = forwardRef<HTMLDivElement, MenuCardProps>(({ refCard }, ref) 
       setRect(rectContainer);
     }
   };
+
   useEffect(() => {
     calculateDistance();
 
@@ -64,16 +66,13 @@ const CardEditor = forwardRef<HTMLDivElement, MenuCardProps>(({ refCard }, ref) 
   }, []);
 
   return (
-    <Container ref={ref} className="container_menu-card" rect={rect || initRect}>
+    <Container ref={refMenu} className="container_menu-card" rect={rect}>
       {MenuEdit.map((item, index) => (
         <Editor key={index} {...item} />
       ))}
     </Container>
   );
-});
-export default CardEditor;
-
-//------------------------------------------//
+};
 
 const Container = styled.div<IContainerProp>`
   position: fixed;
@@ -82,3 +81,5 @@ const Container = styled.div<IContainerProp>`
   z-index: 10000;
   transition: all 0.2s linear;
 `;
+
+export default CardEditor;

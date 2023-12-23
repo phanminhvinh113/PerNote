@@ -33,7 +33,7 @@ const CardItem: FC<ICardProps> = ({ card }) => {
 
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const contentEditableRef = useRef<HTMLDivElement>(null);
-  const refCard = useRef<HTMLElement | null>(null);
+  const refCard = useRef<HTMLDivElement | null>(null);
   const refContainerMenu = useRef<HTMLDivElement | null>(null);
 
   //
@@ -140,7 +140,7 @@ const CardItem: FC<ICardProps> = ({ card }) => {
         </CardMedia>
       </Card>
 
-      {isEditMode && !isNewCard && <CardEditor ref={refContainerMenu} refCard={refCard} />}
+      {isEditMode && !isNewCard && <CardEditor refMenu={refContainerMenu} refCard={refCard} />}
 
       <BackDrop
         updateTitleCard={updateTitleCard}

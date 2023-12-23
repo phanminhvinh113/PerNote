@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Id } from "../types/Column";
+import { Id } from "@/types/Data.type";
 
 interface ISortTableItem {
   id: Id;

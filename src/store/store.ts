@@ -3,7 +3,6 @@ import { persistReducer } from "redux-persist";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import listReducer, { listPersistConfig } from "./features/list/listSlice";
 import appReducer, { appPersistConfig } from "./features/app/appSlice";
-import boardReducer from "./features/board/boardSlice";
 import columnReducer from "./features/column/columnSlice";
 import cardReducer from "./features/card/cardSlice";
 
@@ -11,7 +10,6 @@ import cardReducer from "./features/card/cardSlice";
 const rootReducer = combineReducers({
   listBoard: persistReducer(listPersistConfig, listReducer),
   app: persistReducer(appPersistConfig, appReducer),
-  board: boardReducer,
   column: columnReducer,
   card: cardReducer,
 });
