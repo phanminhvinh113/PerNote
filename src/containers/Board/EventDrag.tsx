@@ -92,14 +92,11 @@ function EvenDrag() {
    * @param activeId
    * @param overId
    */
-  const handleMoveArrayDragEndColumn = useCallback(
-    (activeId: UniqueIdentifier, overId: UniqueIdentifier) => {
-      const activeColumnIndex = listColumn.findIndex((column) => column._id === activeId);
-      const overColumnIndex = listColumn.findIndex((column) => column._id === overId);
-      setListColumn((columns) => arrayMove(columns, activeColumnIndex, overColumnIndex));
-    },
-    [listColumn, setListColumn]
-  );
+  const handleMoveArrayDragEndColumn = (activeId: UniqueIdentifier, overId: UniqueIdentifier) => {
+    const activeColumnIndex = listColumn.findIndex((column) => column._id === activeId);
+    const overColumnIndex = listColumn.findIndex((column) => column._id === overId);
+    setListColumn((columns) => arrayMove(columns, activeColumnIndex, overColumnIndex));
+  };
 
   /**
    *
@@ -111,26 +108,23 @@ function EvenDrag() {
    *
    */
 
-  const handleMoveCardOverColumn = useCallback(
-    (
-      activeId: UniqueIdentifier,
-      overId: UniqueIdentifier,
-      dataActive: ICard,
-      dataOver: ICard,
-      isBelowOverItem: boolean | null
-    ) => {
-      const listCardActive = listCard[dataActive.columnId];
-      const listCardOver = listCard[dataOver.columnId];
-      if (!listCardActive || !listCardOver) return;
-      const overIndexCard = listCardOver.findIndex((card) => card._id === overId);
-      const newIndex = overIndexCard >= 0 ? overIndexCard + (isBelowOverItem ? 1 : 0) : listCardOver.length + 1;
-      listCard[dataActive.columnId] = listCardActive.filter((card) => card._id !== activeId);
-      dataActive.columnId = dataOver.columnId;
-      listCard[dataOver.columnId] = insertItemAt(listCardOver, dataActive, newIndex);
-      setListCard(listCard);
-    },
-    [listCard, setListCard]
-  );
+  const handleMoveCardOverColumn = (
+    activeId: UniqueIdentifier,
+    overId: UniqueIdentifier,
+    dataActive: ICard,
+    dataOver: ICard,
+    isBelowOverItem: boolean | null
+  ) => {
+    const listCardActive = listCard[dataActive.columnId];
+    const listCardOver = listCard[dataOver.columnId];
+    if (!listCardActive || !listCardOver) return;
+    const overIndexCard = listCardOver.findIndex((card) => card._id === overId);
+    const newIndex = overIndexCard >= 0 ? overIndexCard + (isBelowOverItem ? 1 : 0) : listCardOver.length + 1;
+    listCard[dataActive.columnId] = listCardActive.filter((card) => card._id !== activeId);
+    dataActive.columnId = dataOver.columnId;
+    listCard[dataOver.columnId] = insertItemAt(listCardOver, dataActive, newIndex);
+    setListCard(listCard);
+  };
 
   /**
    *
@@ -139,28 +133,29 @@ function EvenDrag() {
    *
    */
 
-  const handleMoveArrayDragEndCard = useCallback(
-    (columnId: UniqueIdentifier, activeId: UniqueIdentifier, overId: UniqueIdentifier) => {
-      let activeCardIndex: number = -1;
-      let overCardIndex: number = -1;
-      const list = listCard[columnId];
-      console.log({
-        columnId,
-        list,
-      });
-      if (!list) return;
-      list.forEach((card, index) => {
-        if (card._id === activeId) activeCardIndex = index;
-        if (card._id === overId) overCardIndex = index;
-      });
+  const handleMoveArrayDragEndCard = (
+    columnId: UniqueIdentifier,
+    activeId: UniqueIdentifier,
+    overId: UniqueIdentifier
+  ) => {
+    let activeCardIndex: number = -1;
+    let overCardIndex: number = -1;
+    const list = listCard[columnId];
+    console.log({
+      columnId,
+      list,
+    });
+    if (!list) return;
+    list.forEach((card, index) => {
+      if (card._id === activeId) activeCardIndex = index;
+      if (card._id === overId) overCardIndex = index;
+    });
 
-      if (activeCardIndex !== -1 && overCardIndex !== -1) {
-        listCard[columnId] = arrayMove(list, activeCardIndex, overCardIndex);
-        setListCard(listCard);
-      }
-    },
-    [listCard, setListCard]
-  );
+    if (activeCardIndex !== -1 && overCardIndex !== -1) {
+      listCard[columnId] = arrayMove(list, activeCardIndex, overCardIndex);
+      setListCard(listCard);
+    }
+  };
 
   /**
    *
@@ -168,14 +163,15 @@ function EvenDrag() {
    * @param overColumnId
    * @param dataCard
    */
-  const handleCardOverColumnEmpty = useCallback(
-    (activeCardId: UniqueIdentifier, overColumnId: UniqueIdentifier, dataCard: ICard) => {
-      listCard[overColumnId] = listCard[dataCard.columnId].filter((card) => card._id !== activeCardId);
-      listCard[overColumnId].push({ ...dataCard, columnId: overColumnId });
-      setListCard(listCard);
-    },
-    [listCard, setListCard]
-  );
+  const handleCardOverColumnEmpty = (
+    activeCardId: UniqueIdentifier,
+    overColumnId: UniqueIdentifier,
+    dataCard: ICard
+  ) => {
+    listCard[dataCard.columnId] = listCard[dataCard.columnId].filter((card) => card._id !== activeCardId);
+    listCard[overColumnId].push({ ...dataCard, columnId: overColumnId });
+    setListCard(listCard);
+  };
 
   return {
     onDragStart,
