@@ -13,7 +13,7 @@ import { getItemInLocalStorage } from "@/utils/helper";
 import { NAME_STORE_LOCAL } from "@/utils/constant.app";
 
 const deleteCard = async (boardId: UniqueIdentifier, columnId: UniqueIdentifier, cardId: UniqueIdentifier) => {
-  console.log({ boardId, columnId, cardId });
+
 
   const listCard: IListCard = await getItemInLocalStorage(boardId + NAME_STORE_LOCAL.PREFIX_BOARD_CARDS);
 

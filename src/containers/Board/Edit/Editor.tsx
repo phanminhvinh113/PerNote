@@ -25,7 +25,7 @@ const Editor: FC<MenuChildProp> = ({ title, icon, component, method }) => {
   const handleOnClick = async () => {
     if (!method) return;
     const result = await method(boardId, card.columnId, card._id);
-    console.log("result", result);
+    
 
     if (!Array.isArray(result)) return;
     setListColumn(result);

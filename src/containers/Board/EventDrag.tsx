@@ -141,10 +141,7 @@ function EvenDrag() {
     let activeCardIndex: number = -1;
     let overCardIndex: number = -1;
     const list = listCard[columnId];
-    console.log({
-      columnId,
-      list,
-    });
+  
     if (!list) return;
     list.forEach((card, index) => {
       if (card._id === activeId) activeCardIndex = index;

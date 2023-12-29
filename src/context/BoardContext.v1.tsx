@@ -153,10 +153,10 @@ const BoardContextContainer: FunctionComponent<DragContextProps> = () => {
    */
   function updateCard(columnId: UniqueIdentifier, cardId: UniqueIdentifier, newTitleCard: string) {
     setListColumn((columns) => {
-      console.log("before", { listColumn });
+     
       return columns.map((column) => {
         if (column._id !== columnId) return column;
-        console.log({ columns });
+     
         column.cards = column.cards.map((card) => (card._id === cardId ? { ...card, title: newTitleCard } : card));
         return column;
       });
@@ -194,7 +194,7 @@ const BoardContextContainer: FunctionComponent<DragContextProps> = () => {
     );
   }
   function removeCoverCard(columnId: UniqueIdentifier, cardId: UniqueIdentifier) {
-    console.log({ columnId, cardId });
+  
     setListColumn((columns) =>
       columns.map((column) => {
         if (column._id !== columnId) return column;

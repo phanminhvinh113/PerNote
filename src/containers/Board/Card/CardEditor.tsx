@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { IRect } from "@/types/Data.type";
 import { initRect } from "@/utils/constant.app";
@@ -16,6 +16,7 @@ interface IContainerProp {
   rect: IRect;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 const CardEditor: React.FC<MenuCardProps> = ({ refCard, refMenu }) => {
   const dispatch = useAppDispatch();
   const [rect, setRect] = useState<IRect>(initRect);
@@ -24,7 +25,7 @@ const CardEditor: React.FC<MenuCardProps> = ({ refCard, refMenu }) => {
     if (refCard.current && refMenu.current) {
       const rectCard = refCard.current.getBoundingClientRect();
       const rectMenu = refMenu.current.getBoundingClientRect();
-      console.log(rectMenu);
+ 
       const rectContainer = {
         ...initRect,
       };
@@ -74,6 +75,11 @@ const CardEditor: React.FC<MenuCardProps> = ({ refCard, refMenu }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
+export default memo(CardEditor);
+
+
+// eslint-disable-next-line react-refresh/only-export-components
 const Container = styled.div<IContainerProp>`
   position: fixed;
   top: ${(props) => props.rect.top}px;
@@ -81,5 +87,3 @@ const Container = styled.div<IContainerProp>`
   z-index: 10000;
   transition: all 0.2s linear;
 `;
-
-export default CardEditor;

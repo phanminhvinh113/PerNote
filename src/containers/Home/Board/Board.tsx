@@ -3,21 +3,16 @@ import styled from "styled-components";
 import { RootState } from "../../../store/store";
 import { IListBoardSlice } from "../../../store/features/list/listSlice";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { getItemInLocalStorage } from "@/utils/helper";
-
 const Board = () => {
   const { list }: IListBoardSlice = useSelector((state: RootState) => state.listBoard);
-  const list_board = getItemInLocalStorage("persist:list_board");
+ 
   const navigate = useNavigate();
 
   const handleRedirect = (boardId: string) => {
     navigate(`dashboard/${boardId}`);
   };
 
-  useEffect(() => {
-    list_board.then((result) => console.log(JSON.parse(result.list)));
-  });
+
 
   return (
     <BoardContainer>

@@ -1,11 +1,12 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, memo, useEffect, useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Snackbar from "@mui/material/Snackbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import useClickOutside from "@/hooks/useClickOutSide";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { setIsDisableDragColumn } from "@/store/features/column/columnSlice";
 
 interface BackDropProp {
   isEditMode: boolean;
@@ -16,6 +17,7 @@ interface BackDropProp {
   updateTitleCard: VoidFunction;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 const BackDrop: React.FC<BackDropProp> = ({
   isEditMode,
   updateTitleCard,
@@ -24,6 +26,7 @@ const BackDrop: React.FC<BackDropProp> = ({
   refCard,
   refContainerMenu,
 }) => {
+  const dispatch = useAppDispatch();
   const [isAlert, setIsAlert] = useState<boolean>(false);
   const isNewCard = useAppSelector((state) => state.card.isNewCard);
 
@@ -43,6 +46,7 @@ const BackDrop: React.FC<BackDropProp> = ({
     }
 
     updateTitleCard();
+    dispatch(setIsDisableDragColumn(false))
   };
 
   useClickOutside({
@@ -75,7 +79,7 @@ const BackDrop: React.FC<BackDropProp> = ({
   );
 
   return (
-    <Backdrop open={isEditMode} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1000 }}>
+    <Backdrop  open={isEditMode} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1000 }}>
       <Box>
         <Snackbar
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
@@ -88,4 +92,5 @@ const BackDrop: React.FC<BackDropProp> = ({
   );
 };
 
-export default BackDrop;
+// eslint-disable-next-line react-refresh/only-export-components
+export default memo(BackDrop);

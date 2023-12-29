@@ -4,7 +4,6 @@ import {
   CollisionDetection,
   UniqueIdentifier,
   closestCenter,
-  closestCorners,
   getFirstCollision,
   pointerWithin,
   rectIntersection,
@@ -16,6 +15,7 @@ interface CollectionDetectionProp {
   activeData: IColumn | ICard | null;
 }
 function CollisionDetectionStrategy({ activeDragType, activeData }: CollectionDetectionProp) {
+
   const { listColumn } = useBoardContext();
   const lastOverId = useRef<UniqueIdentifier>();
   const recentlyMovedToNewContainer = useRef(false);
@@ -23,11 +23,12 @@ function CollisionDetectionStrategy({ activeDragType, activeData }: CollectionDe
   const containId = useCallback(
     (id: UniqueIdentifier): boolean => {
       listColumn?.forEach((column) => {
-        if (column._id == id) return true;
+        if (column._id === id) return true;
       });
       return false;
     },
-    [listColumn]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
   );
 
   /**
@@ -38,20 +39,31 @@ function CollisionDetectionStrategy({ activeDragType, activeData }: CollectionDe
    * - If there are no intersecting containers, return the last matched intersection
    *
    */
+
+  
   const collisionDetectionStrategy: CollisionDetection = useCallback(
     (args) => {
+
       if (activeDragType === Type.CARD) {
-        return closestCorners({
-          ...args,
-        });
-      }
-      if (activeData?._id && containId(activeData?._id)) {
+    
         return closestCenter({
           ...args,
-          droppableContainers: args.droppableContainers.filter((container) => containId(container.id)),
         });
+        // return closestCorners({
+        //   ...args,
+        // });
       }
+     
+      // if (activeData?._id && containId(activeData?._id)) {
+      //   console.log(containId(activeData?._id))
 
+      //   console.log("collision column")
+      //   return closestCenter({
+      //     ...args,
+      //     droppableContainers: args.droppableContainers.filter((container) => containId(container.id)),
+      //   });
+      // }
+   
       // Start by finding any intersecting droppable
       const pointerIntersections = pointerWithin(args);
       const intersections =
@@ -61,6 +73,7 @@ function CollisionDetectionStrategy({ activeDragType, activeData }: CollectionDe
           : rectIntersection(args);
 
       let overId = getFirstCollision(intersections, "id");
+      console.log({overId})
 
       if (overId != null) {
         if (containId(overId)) {
