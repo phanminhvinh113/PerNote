@@ -73,7 +73,7 @@ function CollisionDetectionStrategy({ activeDragType, activeData }: CollectionDe
           : rectIntersection(args);
 
       let overId = getFirstCollision(intersections, "id");
-      console.log({overId})
+     
 
       if (overId != null) {
         if (containId(overId)) {
