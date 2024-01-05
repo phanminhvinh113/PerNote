@@ -1,5 +1,5 @@
 import { Box, Button } from "@mui/material";
-import { FC, useState } from "react";
+import { FC, useRef, useState } from "react";
 import ToggleThemeMode from "./ToggleTheme";
 import { APP } from "@/style/constant.style";
 import AddBoard from "../Home/Board/AddBoard";
@@ -9,9 +9,9 @@ interface HeaderProps {}
 
 const Header: FC<HeaderProps> = () => {
   const [isOpenAction, setIsOpenAction] = useState<boolean>(false);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const handleOnClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+  const refAnchorEl = useRef<HTMLDivElement | null>(null);
+
+  const handleOnClick = () => {
     setIsOpenAction(true);
   };
   const onClose = () => {
@@ -29,11 +29,13 @@ const Header: FC<HeaderProps> = () => {
       <Button variant="contained">Contained</Button>
 
       <ToggleThemeMode />
-      <Button variant="contained" onClick={handleOnClick}>
-        Create New Board
-      </Button>
+      <div ref={refAnchorEl}>
+        <Button variant="contained" onClick={handleOnClick}>
+          Create New Board
+        </Button>
+      </div>
       {isOpenAction && (
-        <Menu anchorEl={anchorEl} open={isOpenAction} onClose={onClose} top={40} left={40}>
+        <Menu anchorEl={refAnchorEl} open={isOpenAction} onClose={onClose} top={40} left={40}>
           <AddBoard />
         </Menu>
       )}

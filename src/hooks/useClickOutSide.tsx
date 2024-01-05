@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 type UseClickOutsideProps = {
   refs: React.RefObject<HTMLElement>[];
@@ -7,22 +7,15 @@ type UseClickOutsideProps = {
   condition?: boolean[];
 };
 
-function useClickOutside({ refs, handler, dependencies, condition }: UseClickOutsideProps): boolean {
-  const [isClickedOutside, setIsClickedOutside] = useState(false);
-
+function useClickOutside({ refs, handler, dependencies, condition }: UseClickOutsideProps) {
   const handleClickOutside = (event: MouseEvent) => {
-    const isPermission = condition && condition.includes(false);
+    const isPrevent = condition && condition.includes(false);
 
-    if (isPermission !== undefined && isPermission) return;
+    if (isPrevent !== undefined && isPrevent) return;
 
     const isOutside = refs.every((ref) => ref.current && !ref.current.contains(event.target as Node));
 
-    if (isOutside) {
-      handler();
-      setIsClickedOutside(true);
-    } else {
-      setIsClickedOutside(false);
-    }
+    if (isOutside) handler();
   };
 
   useEffect(() => {
@@ -33,8 +26,6 @@ function useClickOutside({ refs, handler, dependencies, condition }: UseClickOut
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies);
-
-  return isClickedOutside;
 }
 
 export default useClickOutside;

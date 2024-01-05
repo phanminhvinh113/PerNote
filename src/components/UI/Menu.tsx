@@ -1,14 +1,15 @@
+import React, { useRef, useMemo, Fragment, RefObject } from "react";
+import useClickOutside from "@/hooks/useClickOutSide";
+import useResize from "@/hooks/useResize";
 import { setIsDisableDragColumn } from "@/store/features/column/columnSlice";
 import { useAppDispatch } from "@/store/hooks";
 import { IRect } from "@/types/Data.type";
-
-import React, { useRef, useEffect, useState, useMemo, useCallback } from "react";
 import styled from "styled-components";
 
 interface Props {
   children?: React.ReactNode;
   open: boolean;
-  anchorEl: HTMLElement | null;
+  anchorEl: RefObject<HTMLElement> | null;
   onClose: () => void;
   left?: number;
   right?: number;
@@ -21,75 +22,37 @@ interface IPropsStyleContainer {
 const Menu: React.FC<Props> = ({ children, open, anchorEl, onClose, left = 0, right = 0, top = 0 }) => {
   const dispatch = useAppDispatch();
   const componentRef = useRef<HTMLDivElement | null>(null);
+
   const rect = useMemo(() => {
-    if (anchorEl) {
-      return anchorEl.getBoundingClientRect() as IRect;
-    }
+    if (anchorEl?.current) return anchorEl.current.getBoundingClientRect() as IRect;
   }, [anchorEl]);
 
-  const [viewLeft, setViewLeft] = useState<number>(rect?.left ? rect.left : 0);
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (componentRef.current && !componentRef.current.contains(event.target as Node)) {
-      onClose();
-      dispatch(setIsDisableDragColumn(false));
-    }
+  const handleClickOutSide = () => {
+    onClose();
+    dispatch(setIsDisableDragColumn(false));
   };
 
-  const calculateDistance = useCallback(() => {
-    if (componentRef.current) {
-      const rectComponent = componentRef.current.getBoundingClientRect() as IRect;
-      if (rectComponent.right > window.innerWidth - 10) {
-        setViewLeft(window.innerWidth - rectComponent.width - 10);
-      } else {
-        setViewLeft(left - right + (rect?.left || 0));
-      }
-    }
-  }, [left, right, rect, componentRef]);
+  const [viewLeft, viewHeight] = useResize({
+    componentRef,
+    left,
+    rect,
+    right,
+    top,
+    delay: 400,
+  });
 
-  useEffect(() => {
-    let timeoutId: number | undefined;
+  useClickOutside({
+    dependencies: [],
+    handler: handleClickOutSide,
+    refs: [componentRef],
+    condition: [open],
+  });
 
-    calculateDistance();
-
-    // Recalculate the distance when the window is resized
-
-    const handleResize = () => {
-      // Clear the previous timeout to prevent the calculation from happening
-      // if the user is still resizing the window
-      clearTimeout(timeoutId);
-      // Set a new timeout to delay the calculation
-      timeoutId = setTimeout(() => {
-        calculateDistance();
-      }, 400); // Adjust the delay time (in milliseconds) as needed
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    // Cleanup the event listener on component unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  useEffect(() => {
-    // Attach event listener when the component is mounted
-    document.addEventListener("mousedown", handleClickOutside);
-
-    // Cleanup the event listener when the component is unmounted
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty dependency array means this effect runs once when the component mounts
-
-  if (!open || !anchorEl) return null;
-  //
+  if (!open || !anchorEl) return <Fragment></Fragment>;
 
   return (
     <Container>
-      <Wrapper $left={viewLeft} $top={rect ? rect.top + top : top} ref={componentRef}>
+      <Wrapper $left={viewLeft} $top={viewHeight} ref={componentRef}>
         {children}
       </Wrapper>
     </Container>
@@ -104,12 +67,14 @@ const Container = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 1000;
+  z-index: 100000;
   cursor: default;
 `;
 const Wrapper = styled.div<IPropsStyleContainer>`
   position: fixed;
-  top: ${(props) => props.$top}px;
-  left: ${(props) => props.$left}px;
-  transition: all 0.2s linear;
+  top: ${(props) => (props.$top < 0 ? "auto" : `${props.$top}px`)};
+  bottom: ${(props) => (props.$top < 0 ? `${-props.$top}px` : "auto")};
+  left: ${(props) => (props.$left < 0 ? "auto" : `${props.$left}px`)};
+  right: ${(props) => (props.$left < 0 ? `${-props.$left}px` : "auto")};
+  transition: top 0.2s linear, left 0.2s linear, right 0.2s linear, bottom 0.2s linear;
 `;

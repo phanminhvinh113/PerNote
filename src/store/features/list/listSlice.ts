@@ -8,7 +8,7 @@ import { PersistConfig } from "redux-persist";
 const KEY_NAME: string = "list_board";
 // Define a type for the slice state
 export interface IListSliceType {
-  id: string;
+  _id: string;
   title: string;
 }
 

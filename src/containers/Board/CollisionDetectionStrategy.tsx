@@ -1,9 +1,10 @@
-import useBoardContext from "@/hooks/useBoardContext";
+import useBoardContext from "@/containers/Board/hooks/useBoardContext";
 import { ICard, IColumn, Type } from "@/types/Data.type";
 import {
   CollisionDetection,
   UniqueIdentifier,
   closestCenter,
+  closestCorners,
   getFirstCollision,
   pointerWithin,
   rectIntersection,
@@ -15,7 +16,6 @@ interface CollectionDetectionProp {
   activeData: IColumn | ICard | null;
 }
 function CollisionDetectionStrategy({ activeDragType, activeData }: CollectionDetectionProp) {
-
   const { listColumn } = useBoardContext();
   const lastOverId = useRef<UniqueIdentifier>();
   const recentlyMovedToNewContainer = useRef(false);
@@ -40,30 +40,21 @@ function CollisionDetectionStrategy({ activeDragType, activeData }: CollectionDe
    *
    */
 
-  
   const collisionDetectionStrategy: CollisionDetection = useCallback(
     (args) => {
-
       if (activeDragType === Type.CARD) {
-    
-        return closestCenter({
+        return closestCorners({
           ...args,
         });
-        // return closestCorners({
-        //   ...args,
-        // });
       }
-     
-      // if (activeData?._id && containId(activeData?._id)) {
-      //   console.log(containId(activeData?._id))
 
-      //   console.log("collision column")
-      //   return closestCenter({
-      //     ...args,
-      //     droppableContainers: args.droppableContainers.filter((container) => containId(container.id)),
-      //   });
-      // }
-   
+      if (activeData?._id && containId(activeData?._id)) {
+        return closestCenter({
+          ...args,
+          droppableContainers: args.droppableContainers.filter((container) => containId(container.id)),
+        });
+      }
+
       // Start by finding any intersecting droppable
       const pointerIntersections = pointerWithin(args);
       const intersections =
@@ -73,7 +64,6 @@ function CollisionDetectionStrategy({ activeDragType, activeData }: CollectionDe
           : rectIntersection(args);
 
       let overId = getFirstCollision(intersections, "id");
-     
 
       if (overId != null) {
         if (containId(overId)) {

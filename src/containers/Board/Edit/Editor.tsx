@@ -1,10 +1,11 @@
+import { FC, ReactNode, useRef, useState } from "react";
 import styled from "styled-components";
-import { FC, ReactNode, useState } from "react";
-import { Backdrop } from "@mui/material";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useParams } from "react-router-dom";
 import { UniqueIdentifier } from "@dnd-kit/core";
-import useBoardContext from "@/hooks/useBoardContext";
+import useBoardContext from "@/containers/Board/hooks/useBoardContext";
+import Menu from "@/components/UI/Menu";
+import { setIsDisableDragColumn } from "@/store/features/column/columnSlice";
 
 interface MenuChildProp {
   title: string;
@@ -14,40 +15,53 @@ interface MenuChildProp {
 }
 
 const Editor: FC<MenuChildProp> = ({ title, icon, component, method }) => {
+  const dispatch = useAppDispatch();
   const { boardId } = useParams();
   const card = useAppSelector((state) => state.card.card_select);
-  const { setListColumn } = useBoardContext();
+  const refAnchorEl = useRef<HTMLDivElement | null>(null);
+
+  const { setListCard } = useBoardContext();
   const [isOpenEdit, setIsOpenEdit] = useState<boolean>(false);
 
   const toggleEditor = () => {
     setIsOpenEdit((prev) => !prev);
   };
+
   const handleOnClick = async () => {
     if (!method) return;
+
     const result = await method(boardId, card.columnId, card._id);
-    
 
     if (!Array.isArray(result)) return;
-    setListColumn(result);
+
+    setListCard((prevCards) => ({ ...prevCards, [card.columnId]: result }));
   };
 
   const handleToggleOpenEditor = () => {
     toggleEditor();
+    if (!isOpenEdit) {
+      dispatch(setIsDisableDragColumn(true));
+    }
   };
 
   return (
-    <Container onClick={handleOnClick}>
+    <Container ref={refAnchorEl} onClick={handleOnClick}>
       <EditorItem onClick={handleToggleOpenEditor}>
         <div>{title}</div>
         <div>{icon}</div>
       </EditorItem>
-      {component && <Backdrop open={isOpenEdit} onClick={handleToggleOpenEditor} sx={{ zIndex: 1000 }}></Backdrop>}
-      {isOpenEdit && component}
+
+      {isOpenEdit && (
+        <Menu open={isOpenEdit} anchorEl={refAnchorEl} onClose={() => setIsOpenEdit(false)} left={-12}>
+          {component}
+        </Menu>
+      )}
     </Container>
   );
 };
 export default Editor;
 const Container = styled.div``;
+
 const EditorItem = styled.div`
   display: flex;
   justify-content: space-between;

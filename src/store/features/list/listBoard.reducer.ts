@@ -9,15 +9,15 @@ class ListReducer {
   public addNewTitleBoard(state: IListBoardSlice, action: PayloadAction<IBoardPayload>) {
     if (!action?.payload.titleBoard) return;
 
-    const id: string = uuid.v4();
-    const keyListCard = id + NAME_STORE_LOCAL.PREFIX_BOARD_CARDS;
-    const keyListColumn = id + NAME_STORE_LOCAL.PREFIX_BOARD_COLUMNS;
+    const _id: string = uuid.v4();
+    const keyListCard = _id + NAME_STORE_LOCAL.PREFIX_BOARD_CARDS;
+    const keyListColumn = _id + NAME_STORE_LOCAL.PREFIX_BOARD_COLUMNS;
 
     setItemToLocalStorage(keyListCard, {});
     setItemToLocalStorage(keyListColumn, []);
 
     state.list.push({
-      id,
+      _id,
       title: action.payload.titleBoard,
     });
   }

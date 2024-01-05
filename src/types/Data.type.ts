@@ -81,3 +81,9 @@ export type CollisionDetection = (args: {
   droppableContainers: DroppableContainer[];
   pointerCoordinates: Coordinates | null;
 }) => Collision[];
+
+export interface ITime {
+  hour: string;
+  minute: string;
+  period: string;
+}

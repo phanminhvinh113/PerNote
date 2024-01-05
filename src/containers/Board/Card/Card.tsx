@@ -12,7 +12,7 @@ import { THEME_MODE } from "@/utils/constant.app";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setCardSelect, setIsNewCard } from "@/store/features/card/cardSlice";
 import { setIsDisableDragColumn } from "@/store/features/column/columnSlice";
-import useBoardContext from "@/hooks/useBoardContext";
+import useBoardContext from "@/containers/Board/hooks/useBoardContext";
 import useScrollIntoView from "@/hooks/useScrollIntoView";
 import CardEditor from "./CardEditor";
 import BackDrop from "./BackDrop";
@@ -120,6 +120,7 @@ const CardItem: FC<ICardProps> = ({ card }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [isEditMode]
   );
+
   return (
     <Box ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <Card ref={refCard} className={styledCardContainer} sx={cardStyle}>

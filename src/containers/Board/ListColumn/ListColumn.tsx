@@ -8,7 +8,7 @@ import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortabl
 import Column from "../Column/Column";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setIsNewColumn } from "@/store/features/column/columnSlice";
-import useBoardContext from "@/hooks/useBoardContext";
+import useBoardContext from "@/containers/Board/hooks/useBoardContext";
 
 //
 interface IListColumnProps {

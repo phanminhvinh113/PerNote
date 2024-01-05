@@ -46,7 +46,7 @@ const BackDrop: React.FC<BackDropProp> = ({
     }
 
     updateTitleCard();
-    dispatch(setIsDisableDragColumn(false))
+    dispatch(setIsDisableDragColumn(false));
   };
 
   useClickOutside({
@@ -79,7 +79,7 @@ const BackDrop: React.FC<BackDropProp> = ({
   );
 
   return (
-    <Backdrop  open={isEditMode} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1000 }}>
+    <Backdrop open={isEditMode} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1000 }}>
       <Box>
         <Snackbar
           anchorOrigin={{ vertical: "top", horizontal: "center" }}

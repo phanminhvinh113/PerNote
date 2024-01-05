@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setIsNewColumn } from "@/store/features/column/columnSlice";
 import Menu from "@/components/UI/Menu";
 import BoardAction from "./BoardAction";
-import useBoardContext from "@/hooks/useBoardContext";
+import useBoardContext from "@/containers/Board/hooks/useBoardContext";
 
 interface IHeaderProps {
   column: IColumn;
@@ -28,7 +28,7 @@ const Header: FC<IHeaderProps> = ({ column, isEditMode, setIsEditMode }) => {
   const [titleColumn, setTitleInput] = useState<string>(column?.title);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isOpenAction, setIsOpenAction] = useState<boolean>(false);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const refAnchorEl = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (inputRef.current && isNewColumn) {
@@ -36,8 +36,7 @@ const Header: FC<IHeaderProps> = ({ column, isEditMode, setIsEditMode }) => {
     }
   }, [dispatch, isNewColumn]);
 
-  const handleOnClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+  const handleOnClick = () => {
     setIsOpenAction(true);
   };
   const onClose = () => {
@@ -81,7 +80,7 @@ const Header: FC<IHeaderProps> = ({ column, isEditMode, setIsEditMode }) => {
           <MoreVertIcon sx={{ height: "0.8em", width: "0.8em" }} />
         </IconButton>
         {isOpenAction && (
-          <Menu anchorEl={anchorEl} open={isOpenAction} onClose={onClose} left={60} top={-30}>
+          <Menu anchorEl={refAnchorEl} open={isOpenAction} onClose={onClose} left={60} top={-30}>
             <BoardAction onClose={onClose} />
           </Menu>
         )}

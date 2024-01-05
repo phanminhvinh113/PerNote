@@ -5,14 +5,12 @@ import { IListBoardSlice } from "../../../store/features/list/listSlice";
 import { useNavigate } from "react-router-dom";
 const Board = () => {
   const { list }: IListBoardSlice = useSelector((state: RootState) => state.listBoard);
- 
+
   const navigate = useNavigate();
 
   const handleRedirect = (boardId: string) => {
     navigate(`dashboard/${boardId}`);
   };
-
-
 
   return (
     <BoardContainer>
@@ -20,7 +18,7 @@ const Board = () => {
       <BoardWrapper>
         {list &&
           list?.map((board) => (
-            <BoardProvider key={board?.id} onClick={() => handleRedirect(board?.id)}>
+            <BoardProvider key={board?._id} onClick={() => handleRedirect(board?._id)}>
               <span>{board?.title}</span>
             </BoardProvider>
           ))}

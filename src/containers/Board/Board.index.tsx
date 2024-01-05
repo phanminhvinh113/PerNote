@@ -4,7 +4,7 @@ import { STYLED_DEFAULT } from "@/style/constant.style";
 import ListColumn from "./ListColumn/ListColumn";
 import { DndContext, MeasuringStrategy } from "@dnd-kit/core";
 
-import useBoardContext from "@/hooks/useBoardContext";
+import useBoardContext from "@/containers/Board/hooks/useBoardContext";
 import EventDrag from "./EventDrag";
 import useSensorConfig from "./hooks/useSensor.config";
 import CollisionDetectionStrategy from "./CollisionDetectionStrategy";

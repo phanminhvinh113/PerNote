@@ -5,17 +5,21 @@ import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import QueryBuilderIcon from "@mui/icons-material/QueryBuilder";
 import CreditCardOffIcon from "@mui/icons-material/CreditCardOff";
 
-/**********************************************************8 */
-import Cover from "./Cover";
+/************************************************************/
 import { IListCard, TypeElementMenu } from "@/types/Data.type";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { getItemInLocalStorage } from "@/utils/helper";
 import { NAME_STORE_LOCAL } from "@/utils/constant.app";
+/********************************************/
+import Cover from "../cover/Cover";
+import Date from "../date/Date";
+import Move from "../move/Move";
 
 const deleteCard = async (boardId: UniqueIdentifier, columnId: UniqueIdentifier, cardId: UniqueIdentifier) => {
-
+  if (!columnId) return;
 
   const listCard: IListCard = await getItemInLocalStorage(boardId + NAME_STORE_LOCAL.PREFIX_BOARD_CARDS);
+  console.log({ listCard });
 
   const cards = listCard[columnId];
 
@@ -44,11 +48,12 @@ export const MenuEdit: TypeElementMenu[] = [
   {
     title: "Move",
     icon: <TrendingFlatIcon />,
-    component: <CreditCardIcon />,
+    component: <Move />,
   },
   {
     title: "Change Date",
     icon: <QueryBuilderIcon />,
+    component: <Date />,
   },
   {
     title: "Delete",

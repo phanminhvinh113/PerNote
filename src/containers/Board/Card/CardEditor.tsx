@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { IRect } from "@/types/Data.type";
 import { initRect } from "@/utils/constant.app";
-import { MenuEdit } from "../Edit/MenuItem";
+import { MenuEdit } from "../Edit/utils/MenuItem";
 import Editor from "../Edit/Editor";
 import { useAppDispatch } from "@/store/hooks";
 import { setRectCard } from "@/store/features/card/cardSlice";
@@ -25,7 +25,7 @@ const CardEditor: React.FC<MenuCardProps> = ({ refCard, refMenu }) => {
     if (refCard.current && refMenu.current) {
       const rectCard = refCard.current.getBoundingClientRect();
       const rectMenu = refMenu.current.getBoundingClientRect();
- 
+
       const rectContainer = {
         ...initRect,
       };
@@ -77,7 +77,6 @@ const CardEditor: React.FC<MenuCardProps> = ({ refCard, refMenu }) => {
 
 // eslint-disable-next-line react-refresh/only-export-components
 export default memo(CardEditor);
-
 
 // eslint-disable-next-line react-refresh/only-export-components
 const Container = styled.div<IContainerProp>`

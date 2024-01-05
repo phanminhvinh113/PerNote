@@ -21,3 +21,7 @@ export const initRect: IRect = {
   x: 0,
   y: 0,
 };
+export const SELECT_DATE_FOR = {
+  start_date: "START_DATE",
+  due_date: "DUE_DATE",
+};

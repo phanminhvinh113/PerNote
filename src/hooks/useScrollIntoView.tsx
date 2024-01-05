@@ -19,7 +19,7 @@ function useScrollIntoView({ ref, condition, dependencies, func, block = "start"
       func && func();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, dependencies);
+  }, [...dependencies]);
 
   return ref;
 }

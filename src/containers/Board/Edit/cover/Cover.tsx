@@ -2,10 +2,8 @@ import { FC, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Card, CardContent, CardMedia, Skeleton } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import useBoardContext from "@/hooks/useBoardContext";
+import useBoardContext from "@/containers/Board/hooks/useBoardContext";
 import { ListImageTemplate } from "@/utils/constant.template";
-import CloseIcon from "@mui/icons-material/Close";
-import { IRect } from "@/types/Data.type";
 import { setCardSelect } from "@/store/features/card/cardSlice";
 
 interface ICoverProps {}
@@ -18,7 +16,7 @@ const Cover: FC<ICoverProps> = () => {
   const refInputLink = useRef<HTMLInputElement | null>(null);
   const { updateCoverCard, removeCoverCard } = useBoardContext();
 
-  const { card_select: card, rect_card } = useAppSelector((state) => state.card);
+  const { card_select: card } = useAppSelector((state) => state.card);
 
   const handleToggleOpenFillLink = () => {
     setIsOpenFillLink((prev) => !prev);
@@ -52,12 +50,9 @@ const Cover: FC<ICoverProps> = () => {
   }, [isOpenFillLink]);
 
   return (
-    <Container rect_card={rect_card}>
+    <Container>
       <Header>
-        <Title> Cover</Title>
-        <Icon>
-          <CloseIcon />
-        </Icon>
+        <Title>Cover</Title>
       </Header>
       <Body className="body-editor_cover">
         {/* 
@@ -92,14 +87,8 @@ const Cover: FC<ICoverProps> = () => {
           ))}
         </TemplateList>
 
-        {/*
-        
-         */}
-
         {!isOpenFillLink && <ButtonMain onClick={handleToggleOpenFillLink}>Upload Cover With Link</ButtonMain>}
-        {/* 
-  
-           */}
+
         {isOpenFillLink && (
           <Wrapper className="mt-5">
             <Input placeholder="Typing A Link..." className="flex m-auto" ref={refInputLink} type="text" />
@@ -117,16 +106,12 @@ const Cover: FC<ICoverProps> = () => {
 
 export default Cover;
 
-const Container = styled.div<{ rect_card: IRect }>`
+const Container = styled.div`
   background-color: #282e33;
   border-radius: 8px;
   box-shadow: 0 8px 12px #091e4226;
   overflow: hidden;
   width: 365px;
-  z-index: 1200;
-  position: fixed;
-  top: 20px;
-  left: ${(props) => props.rect_card.right + 20}px;
   padding: 10px;
 `;
 const Header = styled.div`
@@ -159,17 +144,7 @@ const Title = styled.span`
   white-space: nowrap;
   z-index: 1;
 `;
-const Icon = styled.span`
-  color: #9fadbc;
-  border-radius: 8px;
-  grid-column: 3;
-  grid-row: 1;
-  padding: 6px;
-  z-index: 2;
-  transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-`;
+
 const TemplateList = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;

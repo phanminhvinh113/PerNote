@@ -9,7 +9,7 @@ import ListCard from "../ListCard/ListCard";
 import ButtonModify from "./ButtonModify";
 import "@/style/DragList.css";
 import { useAppSelector } from "@/store/hooks";
-import useBoardContext from "@/hooks/useBoardContext";
+import useBoardContext from "@/containers/Board/hooks/useBoardContext";
 
 //-----------------------------------------------------------------------------//
 

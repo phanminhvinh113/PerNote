@@ -5,13 +5,14 @@ import listReducer, { listPersistConfig } from "./features/list/listSlice";
 import appReducer, { appPersistConfig } from "./features/app/appSlice";
 import columnReducer from "./features/column/columnSlice";
 import cardReducer from "./features/card/cardSlice";
-
+import dateReducer from "./features/date/dateSlice";
 //
 const rootReducer = combineReducers({
   listBoard: persistReducer(listPersistConfig, listReducer),
   app: persistReducer(appPersistConfig, appReducer),
   column: columnReducer,
   card: cardReducer,
+  date: dateReducer,
 });
 //
 //const persistedReducer = persistReducer(rootPersistConfig, rootReducer);

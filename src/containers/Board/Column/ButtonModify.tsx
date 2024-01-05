@@ -3,7 +3,7 @@ import { FC, memo } from "react";
 import AddCardIcon from "@mui/icons-material/AddCard";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { useAppDispatch } from "@/store/hooks";
-import useBoardContext from "@/hooks/useBoardContext";
+import useBoardContext from "@/containers/Board/hooks/useBoardContext";
 import { setIsNewCard } from "@/store/features/card/cardSlice";
 
 interface ButtonModifyProps {
