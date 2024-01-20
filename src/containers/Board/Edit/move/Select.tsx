@@ -2,6 +2,8 @@ import { UniqueIdentifier } from "@dnd-kit/core";
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { IDestination } from "./Destination";
+import { NAME_STORE_LOCAL } from "@/utils/constant.app";
+import { getItemInLocalStorageSync } from "@/utils/helper";
 
 export interface IOption {
   _id: string | number;
@@ -15,9 +17,10 @@ interface SelectProps {
   getData: () => Promise<IOption[]>;
   setDestination: React.Dispatch<React.SetStateAction<IDestination>>;
   keyCurrent: UniqueIdentifier | undefined;
+  defaultId: UniqueIdentifier | undefined;
 }
 
-const Select: React.FC<SelectProps> = ({ label, getData, property, setDestination, keyCurrent }) => {
+const Select: React.FC<SelectProps> = ({ label, getData, property, setDestination, keyCurrent, defaultId }) => {
   const [options, setOptions] = useState<IOption[]>([]);
 
   const [selectedOption, setSelectedOption] = useState<UniqueIdentifier | null>(null);
@@ -26,15 +29,28 @@ const Select: React.FC<SelectProps> = ({ label, getData, property, setDestinatio
     const selectedValue = event.target.value;
 
     setSelectedOption(selectedValue === "" ? null : selectedValue);
+    if (property === "boardId") {
+      const columnsNew = getItemInLocalStorageSync(selectedValue + NAME_STORE_LOCAL.PREFIX_BOARD_COLUMNS);
 
-    setDestination((prev) => ({ ...prev, [property]: selectedValue }));
+      setDestination((prev) => ({
+        ...prev,
+        [property]: selectedValue,
+        columnId: columnsNew && columnsNew[0] ? columnsNew[0]?._id : prev.columnId,
+      }));
+    } else {
+      setDestination((prev) => ({ ...prev, [property]: selectedValue }));
+    }
   };
   const handleSetData = useCallback(async () => {
     const data = await getData();
 
+    const defaultOption = data.find((i) => i._id === defaultId);
+    if (defaultOption) setSelectedOption(defaultOption?._id);
+
     setOptions(data);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getData, property]);
+  }, [getData]);
 
   useEffect(() => {
     handleSetData();
@@ -49,7 +65,7 @@ const Select: React.FC<SelectProps> = ({ label, getData, property, setDestinatio
       <Dropdown darkMode={true} value={selectedOption || ""} onChange={handleSelectChange}>
         {options.map((option, index) => (
           <Option key={index} value={option?._id}>
-            {keyCurrent === option._id ? option?.title + "(current)" : option?.title}
+            {keyCurrent === option?._id ? option?.title + "(current)" : option?.title}
           </Option>
         ))}
       </Dropdown>
@@ -83,10 +99,9 @@ const Dropdown = styled.select<{ darkMode: boolean }>`
   background-color: ${(props) => (props.darkMode ? "#444" : "#eee")};
   color: ${(props) => (props.darkMode ? "#fff" : "#333")};
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 8px;
   outline: none;
   transition: background-color 0.3s;
-
   &:hover {
     background-color: ${(props) => (props.darkMode ? "#555" : "#ddd")};
   }

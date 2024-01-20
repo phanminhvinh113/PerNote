@@ -11,6 +11,7 @@ import { setIsNewColumn } from "@/store/features/column/columnSlice";
 import Menu from "@/components/UI/Menu";
 import BoardAction from "./BoardAction";
 import useBoardContext from "@/containers/Board/hooks/useBoardContext";
+import styled from "styled-components";
 
 interface IHeaderProps {
   column: IColumn;
@@ -76,9 +77,12 @@ const Header: FC<IHeaderProps> = ({ column, isEditMode, setIsEditMode }) => {
           )}
         </div>
 
-        <IconButton onClick={handleOnClick}>
-          <MoreVertIcon sx={{ height: "0.8em", width: "0.8em" }} />
-        </IconButton>
+        <WrapperButton ref={refAnchorEl}>
+          <IconButton onClick={handleOnClick}>
+            <MoreVertIcon sx={{ height: "0.8em", width: "0.8em" }} />
+          </IconButton>
+        </WrapperButton>
+
         {isOpenAction && (
           <Menu anchorEl={refAnchorEl} open={isOpenAction} onClose={onClose} left={60} top={-30}>
             <BoardAction onClose={onClose} />
@@ -136,5 +140,5 @@ const titleStyle = "w-[80%] break-words min-h-[30px] ";
 //
 const inputStyle = "focus:outline-none focus-visible-bb focus:ring-0 w-[100%] p-[10px] rounded-lg  bg-transparent ";
 //
-
+const WrapperButton = styled.div``;
 //

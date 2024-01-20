@@ -53,3 +53,11 @@ export async function addItemLocalStorage<T>(key: string, value: T) {
     return error;
   }
 }
+export function getItemInLocalStorageSync(key: string) {
+  try {
+    const result = localStorage.getItem(key);
+    return result ? JSON.parse(result) : result;
+  } catch (error) {
+    console.log(error);
+  }
+}

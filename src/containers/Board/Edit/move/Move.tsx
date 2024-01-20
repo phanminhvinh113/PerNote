@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Header from "../components/Header";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import Destination from "./Destination";
+
 interface MoveProps {}
 
 const Move: FC<MoveProps> = () => {
@@ -47,7 +48,6 @@ const SuggestButton = styled.div`
   max-width: 280px;
   overflow: hidden;
   padding: 6px 12px;
-  position: relative;
   text-decoration: none;
   text-overflow: ellipsis;
   transition-duration: 85ms;
