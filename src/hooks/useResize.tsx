@@ -1,5 +1,5 @@
 import { IRect } from "@/types/Data.type";
-import { useEffect, useCallback, useState } from "react";
+import { useEffect, useCallback, useState, useLayoutEffect } from "react";
 
 interface IUseResize {
   rect: IRect | undefined;
@@ -31,6 +31,32 @@ const useResize = ({ rect, componentRef, left, right, top, delay = 0 }: IUseResi
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [componentRef, rect]);
+
+  useLayoutEffect(() => {
+    console.log("check view");
+    if (componentRef.current) {
+      const rectComponent = componentRef.current.getBoundingClientRect() as IRect;
+      console.log(componentRef.current.clientHeight);
+      console.log({
+        rectComponent,
+        rect,
+        viewHeight: innerHeight,
+        result: rect && rect.top + rectComponent.height - window.innerHeight,
+      });
+
+      if (rect && rect.left + rectComponent.width < window.innerWidth) {
+        setViewLeft(rect.left + left - right);
+      } else {
+        setViewLeft(-10);
+      }
+
+      if (rect && rect.top + componentRef.current.clientHeight < window.innerHeight) {
+        setViewHeight(rect.top + top);
+      } else {
+        setViewHeight(-10);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     let timeoutId: number | undefined;

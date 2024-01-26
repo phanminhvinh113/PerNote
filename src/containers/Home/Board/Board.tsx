@@ -29,9 +29,7 @@ const Board = () => {
 
 export default Board;
 //
-const BoardContainer = styled.div`
-  margin: 500px 0;
-`;
+const BoardContainer = styled.div``;
 
 const BoardProvider = styled.div`
   cursor: pointer;

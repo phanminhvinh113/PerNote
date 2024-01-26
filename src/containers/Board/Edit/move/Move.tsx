@@ -31,7 +31,7 @@ const Container = styled.div`
   width: 304px;
 `;
 const Wrapper = styled.div`
-  overflow: overlay;
+  //overflow: overlay;
 `;
 const SuggestButton = styled.div`
   background-color: #a1bdd914;

@@ -37,6 +37,7 @@ const Select: React.FC<SelectProps> = ({ label, getData, property, setDestinatio
         [property]: selectedValue,
         columnId: columnsNew && columnsNew[0] ? columnsNew[0]?._id : prev.columnId,
       }));
+      
     } else {
       setDestination((prev) => ({ ...prev, [property]: selectedValue }));
     }

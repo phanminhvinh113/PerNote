@@ -41,7 +41,6 @@ const Destination: FC<DestinationProps> = () => {
   }, []);
 
   const getDataColumns = useCallback(async () => {
-    console.log({ boardIdChange: destination.boardId });
     const key = destination.boardId ? destination.boardId : boardId;
     const data = await getItemInLocalStorage(key + NAME_STORE_LOCAL.PREFIX_BOARD_COLUMNS);
 
@@ -61,22 +60,15 @@ const Destination: FC<DestinationProps> = () => {
 
     if (cards) cards.push({ title: cards.length + 1, _id: cards.length + 1 });
 
-    console.log({
-      cards,
-    });
-
     return cards ? cards : [{ title: 1, _id: 1 }];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [destination.columnId, destination.boardId]);
 
   useEffect(() => {
-    console.log({ destination });
     getDataPositionCard();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [destination]);
-  useEffect(() => {
-    console.log("columnId Change");
-  }, [destination.boardId]);
+
   return (
     <Container>
       <Select
